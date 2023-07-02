@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,18 +21,16 @@ Blade::directive('livewire', function ($expression) {
     return "<?php echo (new App\Livewire)->initialRender({$expression}); ?>";
 });
 Route::post('/livewire', function () {
-    $component = (new App\Livewire)->fromSnapshot(request('snapshot'));
+    $component = (new App\Livewire())->fromSnapshot(request('snapshot'));
 
     if ($method = request('callMethod')) {
-        (new App\Livewire)->callMethod($component, $method);
+        (new App\Livewire())->callMethod($component, $method);
     }
 
-    [$html, $snapshot] = (new App\Livewire)->toSnapshot($component);
+    [$html, $snapshot] = (new App\Livewire())->toSnapshot($component);
 
     return [
         'html' => $html,
         'snapshot' => $snapshot,
     ];
 });
-
-
