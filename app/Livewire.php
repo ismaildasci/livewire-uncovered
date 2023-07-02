@@ -32,7 +32,10 @@ class Livewire
 
     public function toSnapshot($component)
     {
-        $html = Blade::render($component->render(), $properties = $this->getProperties($component));
+        $html = Blade::render(
+            $component->render(),
+            $properties = $this->getProperties($component)
+        );
 
         [$data, $meta] = $this->dehydrateProperties($properties);
 
@@ -140,7 +143,7 @@ class Livewire
     {
         $component->{$property} = $value;
 
-        $updatedHook = 'updated' . Str::title($property);
+        $updatedHook = 'updated'.Str::title($property);
 
         if (method_exists($component, $updatedHook)) {
             $component->{$updatedHook}();
