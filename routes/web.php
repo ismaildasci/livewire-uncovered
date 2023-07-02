@@ -16,13 +16,22 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
 Blade::directive('livewire', function ($expression) {
     return "<?php echo (new App\Livewire)->initialRender({$expression}); ?>";
 });
-
 Route::post('/livewire', function () {
-    dd(request('snapshot'));
-    dd(request('callMethod'));
-    return request()->all();
+    $component = (new App\Livewire)->fromSnapshot(request('snapshot'));
+
+    if ($method = request('callMethod')) {
+        (new App\Livewire)->callMethod($component, $method);
+    }
+
+    [$html, $snapshot] = (new App\Livewire)->toSnapshot($component);
+
+    return [
+        'html' => $html,
+        'snapshot' => $snapshot,
+    ];
 });
+
+
