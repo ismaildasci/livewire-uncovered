@@ -7,7 +7,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 
-@livewire(App\Http\Livewire\Counter::class)
+@livewire(App\Http\Livewire\Todos::class)
 
 <script src="/livewire.js"></script>
 
