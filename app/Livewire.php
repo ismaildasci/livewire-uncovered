@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Exception;
 use Illuminate\Support\Collection;
-use ReflectionClass;
-use ReflectionProperty;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
+use ReflectionClass;
+use ReflectionProperty;
 
 class Livewire
 {
@@ -88,7 +90,7 @@ class Livewire
         return $component;
     }
 
-    public function verifyChecksum($snapshot)
+    public function verifyChecksum($snapshot): void
     {
         $checksum = $snapshot['checksum'];
 
@@ -104,7 +106,7 @@ class Livewire
         $properties = [];
 
         foreach ($data as $key => $value) {
-            if (isset($meta[$key]) && $meta[$key] === 'collection') {
+            if (isset($meta[$key]) && 'collection' === $meta[$key]) {
                 $value = collect($value);
             }
 
@@ -114,7 +116,7 @@ class Livewire
         return $properties;
     }
 
-    public function setProperties($component, $properties)
+    public function setProperties($component, $properties): void
     {
         foreach ($properties as $key => $value) {
             $component->{$key} = $value;
@@ -134,16 +136,16 @@ class Livewire
         return $properties;
     }
 
-    public function callMethod($component, $method)
+    public function callMethod($component, $method): void
     {
         $component->{$method}();
     }
 
-    public function updateProperty($component, $property, $value)
+    public function updateProperty($component, $property, $value): void
     {
         $component->{$property} = $value;
 
-        $updatedHook = 'updated'.Str::title($property);
+        $updatedHook = 'updated' . Str::title($property);
 
         if (method_exists($component, $updatedHook)) {
             $component->{$updatedHook}();

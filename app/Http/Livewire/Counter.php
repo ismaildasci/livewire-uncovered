@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Livewire;
 
 class Counter
 {
     public $count = 0;
 
-    public function increment()
+    public function increment(): void
     {
         $this->count++;
     }

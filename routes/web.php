@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Livewire;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn () => view('welcome'));
 
 
 Route::post('/livewire', function () {
@@ -39,6 +39,4 @@ Route::post('/livewire', function () {
     ];
 });
 
-Blade::directive('livewire', function ($expression) {
-    return "<?php echo (new App\Livewire)->initialRender({$expression}); ?>";
-});
+Blade::directive('livewire', fn ($expression) => "<?php echo (new App\Livewire)->initialRender({$expression}); ?>");

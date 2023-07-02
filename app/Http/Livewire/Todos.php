@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Livewire;
 
 class Todos
@@ -8,12 +10,12 @@ class Todos
 
     public $todos;
 
-    public function mount()
+    public function mount(): void
     {
         $this->todos = collect(['One todo', 'Two todo']);
     }
 
-    public function addTodo()
+    public function addTodo(): void
     {
         $this->todos->push($this->draft);
 
