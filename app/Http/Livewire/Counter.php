@@ -17,7 +17,8 @@ class Counter
             <div class="counter">
                 <span>{{ $count }}</span>
 
-                <button wire:click="increment">+</button>
+             <button wire:click="increment">+</button>
+
             </div>
         HTML;
     }
