@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Collection;
 use ReflectionClass;
 use ReflectionProperty;
 use Illuminate\Support\Facades\Blade;
@@ -19,8 +20,6 @@ class Livewire
 
         [$html, $snapshot] = $this->toSnapshot($component);
 
-        [$html, $snapshot] = $this->toSnapshot($component);
-
         $snapshotAttribute = htmlentities(json_encode($snapshot));
 
         return <<<HTML
@@ -30,28 +29,65 @@ class Livewire
         HTML;
     }
 
-    public function fromSnapshot($snapshot)
-    {
-        $class = $snapshot['class'];
-        $data = $snapshot['data'];
-
-        $component = new $class();
-
-        $this->setProperties($component, $data);
-
-        return $component;
-    }
-
     public function toSnapshot($component)
     {
         $html = Blade::render($component->render(), $properties = $this->getProperties($component));
 
+        [$data, $meta] = $this->dehydrateProperties($properties);
+
         $snapshot = [
             'class' => get_class($component),
-            'data' => $properties,
+            'data' => $data,
+            'meta' => $meta,
         ];
 
         return [$html, $snapshot];
+    }
+
+    public function dehydrateProperties($properties)
+    {
+        $data = $meta = [];
+
+        foreach ($properties as $key => $value) {
+            if ($value instanceof Collection) {
+                $value = $value->toArray();
+                $meta[$key] = 'collection';
+            }
+
+            $data[$key] = $value;
+        }
+
+        return [$data, $meta];
+    }
+
+    public function fromSnapshot($snapshot)
+    {
+        $class = $snapshot['class'];
+        $data = $snapshot['data'];
+        $meta = $snapshot['meta'];
+
+        $component = new $class();
+
+        $properties = $this->hydrateProperties($data, $meta);
+
+        $this->setProperties($component, $properties);
+
+        return $component;
+    }
+
+    public function hydrateProperties($data, $meta)
+    {
+        $properties = [];
+
+        foreach ($data as $key => $value) {
+            if (isset($meta[$key]) && $meta[$key] === 'collection') {
+                $value = collect($value);
+            }
+
+            $properties[$key] = $value;
+        }
+
+        return $properties;
     }
 
     public function setProperties($component, $properties)
@@ -82,6 +118,7 @@ class Livewire
     public function updateProperty($component, $property, $value)
     {
         $component->{$property} = $value;
+
         $updatedHook = 'updated' . Str::title($property);
 
         if (method_exists($component, $updatedHook)) {
