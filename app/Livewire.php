@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Blade;
 
 class Livewire
 {
-    function initialRender($class) {
+    function initialRender($class)
+    {
         $component = new $class;
 
         $html = Blade::render(
@@ -30,7 +31,8 @@ class Livewire
         HTML;
     }
 
-    function getProperties($component) {
+    function getProperties($component)
+    {
         $properties = [];
 
         $reflectedProperties = (new ReflectionClass($component))->getProperties(ReflectionProperty::IS_PUBLIC);
